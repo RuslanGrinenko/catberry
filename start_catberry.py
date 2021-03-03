@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3.7
 # -*- coding:utf-8 -*-
 
 import sys
@@ -40,11 +40,12 @@ def handleBtnStopPress():
 
 def handleBtnTurnOffPress():
     global music
-	global runFlag
+    global runFlag
     logging.info("TurnOff pressed")
     music.stop()
-	runFlag = False
-	os.system("poweroff")
+    #runFlag = False
+    #os.system("/home/pi/catberry/stop_catberry.py")
+    os.system("shutdown -P now")
 
 btnStart = Button(5)
 btnPause = Button(6)
@@ -59,32 +60,33 @@ btnTurnOff.when_pressed = handleBtnTurnOffPress
 
 try:
     logging.info("start_CATBERRY start")
-    
+
     epd = epd2in7b.EPD()
     logging.info("init and Clear")
     epd.init()
     #epd.Clear()
     #time.sleep(1)
-    
+
     logging.info("Cat eyes ON")
     HBlackimage = Image.open(os.path.join(picdir, 'cat-black-on.bmp'))
     HRedimage = Image.open(os.path.join(picdir, 'cat-red-on.bmp'))
     epd.display(epd.getbuffer(HBlackimage), epd.getbuffer(HRedimage))
 
     time.sleep(3)
-	
-    logging.info("Goto Sleep...")
-    epd.sleep()
-    epd.Dev_exit()
 
-while runFlag:
-    continue
+#    logging.info("Goto Sleep...")
+#    epd.sleep()
+#    epd.Dev_exit()
 
 
 except IOError as e:
     logging.info(e)
-    
+
 except KeyboardInterrupt:    
     logging.info("ctrl + c:")
     epd2in7b.epdconfig.module_exit()
     exit()
+
+
+while runFlag:
+    continue
