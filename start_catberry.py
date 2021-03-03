@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*-
+
 import sys
 import os
 picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'pic')
@@ -14,6 +15,47 @@ from PIL import Image,ImageDraw,ImageFont
 import traceback
 
 logging.basicConfig(level=logging.DEBUG, filename="/var/log/catberry.log")
+
+import vlc
+from gpiozero import Button
+
+runFlag = True
+music = vlc.MediaPlayer("file:///home/pi/catberry/sound/hbsong.mp3")
+
+def handleBtnStartPress():
+    global music
+    logging.info("Play pressed")
+    music.play()
+
+def handleBtnPausePress():
+    global music
+    logging.info("Pause pressed")
+    music.pause()
+
+
+def handleBtnStopPress():
+    global music
+    logging.info("Stop pressed")
+    music.stop()
+
+def handleBtnTurnOffPress():
+    global music
+	global runFlag
+    logging.info("TurnOff pressed")
+    music.stop()
+	runFlag = False
+	os.system("poweroff")
+
+btnStart = Button(5)
+btnPause = Button(6)
+btnStop = Button(13)
+btnTurnOff = Button(19)
+
+btnStart.when_pressed = handleBtnStartPress
+btnPause.when_pressed = handleBtnPausePress
+btnStop.when_pressed = handleBtnStopPress
+btnTurnOff.when_pressed = handleBtnTurnOffPress
+
 
 try:
     logging.info("start_CATBERRY start")
@@ -34,7 +76,11 @@ try:
     logging.info("Goto Sleep...")
     epd.sleep()
     epd.Dev_exit()
-        
+
+while runFlag:
+    continue
+
+
 except IOError as e:
     logging.info(e)
     
