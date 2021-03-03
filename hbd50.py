@@ -16,7 +16,7 @@ import traceback
 logging.basicConfig(level=logging.DEBUG)
 
 try:
-    logging.info("epd2in7b Demo")
+    logging.info("CATBERRY start")
     
     epd = epd2in7b.EPD()
     logging.info("init and Clear")
@@ -30,11 +30,13 @@ try:
     epd.display(epd.getbuffer(HBlackimage), epd.getbuffer(HRedimage))
    
     time.sleep(30)
+	
 	logging.info("Cat eyes OFF")
     HBlackimage = Image.open(os.path.join(picdir, 'cat-black.bmp'))
     HRedimage = Image.open(os.path.join(picdir, 'cat-red-off.bmp'))
     epd.display(epd.getbuffer(HBlackimage), epd.getbuffer(HRedimage))
-    time.sleep(3)
+    
+	time.sleep(3)
 	
 	logging.info("Goto Sleep...")
     epd.sleep()
