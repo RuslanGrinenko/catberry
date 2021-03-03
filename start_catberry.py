@@ -25,17 +25,10 @@ try:
     #time.sleep(1)
     
     logging.info("Cat eyes ON")
-    HBlackimage = Image.open(os.path.join(picdir, 'cat-black.bmp'))
+    HBlackimage = Image.open(os.path.join(picdir, 'cat-black-on.bmp'))
     HRedimage = Image.open(os.path.join(picdir, 'cat-red-on.bmp'))
     epd.display(epd.getbuffer(HBlackimage), epd.getbuffer(HRedimage))
-   
-    time.sleep(30)
-	
-    logging.info("Cat eyes OFF")
-    HBlackimage = Image.open(os.path.join(picdir, 'cat-black.bmp'))
-    HRedimage = Image.open(os.path.join(picdir, 'cat-red-off.bmp'))
-    epd.display(epd.getbuffer(HBlackimage), epd.getbuffer(HRedimage))
-    
+
     time.sleep(3)
 	
     logging.info("Goto Sleep...")
