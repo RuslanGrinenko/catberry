@@ -21,22 +21,28 @@ from gpiozero import Button
 
 runFlag = True
 music = vlc.MediaPlayer("file:///home/pi/catberry/sound/hbsong.mp3")
+playInitiated = False
 
 def handleBtnStartPress():
     global music
+    global epd
+    global playInitiated
     logging.info("Play pressed")
-    try:
-      epd = epd2in7b.EPD()
-      logging.info("init and Clear")
-      epd.init()
-      #epd.Clear()
-      #time.sleep(1)
+    if not playInitiated:
+      try:
+        logging.info("Cake to screen")
+        HBlackimage = Image.open(os.path.join(picdir, 'cake-black.bmp'))
+        HRedimage = Image.open(os.path.join(picdir, 'cake-red.bmp'))
+        epd.display(epd.getbuffer(HBlackimage), epd.getbuffer(HRedimage))
+        playInitiated = True
 
-      logging.info("Cake to screen")
-      HBlackimage = Image.open(os.path.join(picdir, 'cake-black.bmp'))
-      HRedimage = Image.open(os.path.join(picdir, 'cake-red.bmp'))
-      epd.display(epd.getbuffer(HBlackimage), epd.getbuffer(HRedimage))
+      except IOError as e:
+        logging.info(e)
 
+      except KeyboardInterrupt:    
+        logging.info("ctrl + c:")
+        epd2in7b.epdconfig.module_exit()
+        exit()
 
     music.play()
 
@@ -48,16 +54,24 @@ def handleBtnPausePress():
 
 def handleBtnStopPress():
     global music
+    global epd
+    global playInitiated
     logging.info("Stop pressed")
     music.stop()
-
+    if playInitiated:
+       logging.info("Back to Cat eyes ON screen")
+       HBlackimage = Image.open(os.path.join(picdir, 'cat-black-on.bmp'))
+       HRedimage = Image.open(os.path.join(picdir, 'cat-red-on.bmp'))
+       epd.display(epd.getbuffer(HBlackimage), epd.getbuffer(HRedimage))
+       playInitiated = False
+ 
+    
 def handleBtnTurnOffPress():
     global music
     global runFlag
     logging.info("TurnOff pressed")
     music.stop()
-    #runFlag = False
-    #os.system("/home/pi/catberry/stop_catberry.py")
+    #runFlag = False 
     os.system("shutdown -P now")
 
 btnStart = Button(5)
@@ -85,7 +99,7 @@ try:
     HRedimage = Image.open(os.path.join(picdir, 'cat-red-on.bmp'))
     epd.display(epd.getbuffer(HBlackimage), epd.getbuffer(HRedimage))
 
-    time.sleep(3)
+#    time.sleep(3)
 
 #    logging.info("Goto Sleep...")
 #    epd.sleep()
