@@ -6,7 +6,7 @@ ExecStart=/home/pi/catberry/start_catberry.py
 ExecStop=/home/pi/catberry/stop_catberry.py
 Type=simple
 Restart=always
-User=root
+User=pi
  
 [Install]
 WantedBy=multi-user.target
