@@ -1,6 +1,9 @@
 #!/usr/bin/python3.7
 # -*- coding:utf-8 -*-
 
+NOOLITE_API_URL = "http://192.168.8.200/api.htm"
+PARAMS_ARRAY = [{'ch':3,'cmd':0},{'ch':3,'cmd':4},{'ch':3,'cmd':0},{'ch':3,'cmd':4},{'ch':3,'cmd':0},{'ch':4,'cmd':0},{'ch':4,'cmd':4},{'ch':4,'cmd':0},{'ch':4,'cmd':4},{'ch':4,'cmd':0}]
+
 import sys
 import os
 picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'pic')
@@ -16,12 +19,16 @@ import traceback
 
 logging.basicConfig(level=logging.DEBUG, filename="/var/log/catberry.log")
 
+import requests
+
 import vlc
 from gpiozero import Button
 
 runFlag = True
 music = vlc.MediaPlayer("file:///home/pi/catberry/sound/hbsong.mp3")
 playInitiated = False
+
+
 
 def handleBtnStartPress():
     global music
@@ -84,20 +91,20 @@ btnPause.when_pressed = handleBtnPausePress
 btnStop.when_pressed = handleBtnStopPress
 btnTurnOff.when_pressed = handleBtnTurnOffPress
 
+while True:
+  try:
+      logging.info("start_CATBERRY start")
 
-try:
-    logging.info("start_CATBERRY start")
+      epd = epd2in7b.EPD()
+      logging.info("init and Clear")
+      epd.init()
+      #epd.Clear()
+      #time.sleep(1)
 
-    epd = epd2in7b.EPD()
-    logging.info("init and Clear")
-    epd.init()
-    #epd.Clear()
-    #time.sleep(1)
-
-    logging.info("Cat eyes ON")
-    HBlackimage = Image.open(os.path.join(picdir, 'cat-black-on.bmp'))
-    HRedimage = Image.open(os.path.join(picdir, 'cat-red-on.bmp'))
-    epd.display(epd.getbuffer(HBlackimage), epd.getbuffer(HRedimage))
+      logging.info("Cat eyes ON")
+      HBlackimage = Image.open(os.path.join(picdir, 'cat-black-on.bmp'))
+      HRedimage = Image.open(os.path.join(picdir, 'cat-red-on.bmp'))
+      epd.display(epd.getbuffer(HBlackimage), epd.getbuffer(HRedimage))
 
 #    time.sleep(3)
 
@@ -106,13 +113,22 @@ try:
 #    epd.Dev_exit()
 
 
-except IOError as e:
-    logging.info(e)
+  except IOError as e:
+      logging.info(e)
 
-except KeyboardInterrupt:    
-    logging.info("ctrl + c:")
-    epd2in7b.epdconfig.module_exit()
-    exit()
+  except KeyboardInterrupt:    
+      logging.info("ctrl + c:")
+      epd2in7b.epdconfig.module_exit()
+      exit()
 
-while runFlag:
-    continue
+  Ended = 6
+  currentState = music.get_state()
+
+  while runFlag and (currentState != Ended):
+      #print(currentState)
+      currentState = music.get_state()
+      continue
+  
+  for params in PARAMS_ARRAY:
+      r = requests.get(url = NOOLITE_API_URL, params = params)
+  music.stop()
