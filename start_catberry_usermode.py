@@ -25,6 +25,19 @@ music = vlc.MediaPlayer("file:///home/pi/catberry/sound/hbsong.mp3")
 def handleBtnStartPress():
     global music
     logging.info("Play pressed")
+    try:
+      epd = epd2in7b.EPD()
+      logging.info("init and Clear")
+      epd.init()
+      #epd.Clear()
+      #time.sleep(1)
+
+      logging.info("Cake to screen")
+      HBlackimage = Image.open(os.path.join(picdir, 'cake-black.bmp'))
+      HRedimage = Image.open(os.path.join(picdir, 'cake-red.bmp'))
+      epd.display(epd.getbuffer(HBlackimage), epd.getbuffer(HRedimage))
+
+
     music.play()
 
 def handleBtnPausePress():
@@ -87,6 +100,5 @@ except KeyboardInterrupt:
     epd2in7b.epdconfig.module_exit()
     exit()
 
-music.play()
 while runFlag:
     continue
