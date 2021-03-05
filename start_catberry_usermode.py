@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 NOOLITE_API_URL = "http://192.168.8.200/api.htm"
-PARAMS_ARRAY = [{'ch':3,'cmd':0},{'ch':3,'cmd':4},{'ch':3,'cmd':0},{'ch':3,'cmd':4},{'ch':3,'cmd':0},{'ch':4,'cmd':0},{'ch':4,'cmd':4},{'ch':4,'cmd':0},{'ch':4,'cmd':4},{'ch':4,'cmd':0}]
+PARAMS_ARRAY = [{'ch':3,'cmd':4},{'ch':3,'cmd':4},{'ch':3,'cmd':4},{'ch':3,'cmd':4},{'ch':3,'cmd':2},{'ch':4,'cmd':4},{'ch':4,'cmd':4},{'ch':4,'cmd':4},{'ch':4,'cmd':4},{'ch':4,'cmd':2},{'ch':3,'cmd':0},{'ch':4,'cmd':0}]
 
 import sys
 import os
@@ -25,7 +25,7 @@ import vlc
 from gpiozero import Button
 
 runFlag = True
-music = vlc.MediaPlayer("file:///home/pi/catberry/sound/hbsong.mp3")
+music = vlc.MediaPlayer("file:///home/pi/catberry/sound/hbsong.mp4")
 playInitiated = False
 
 
@@ -131,4 +131,6 @@ while True:
   
   for params in PARAMS_ARRAY:
       r = requests.get(url = NOOLITE_API_URL, params = params)
+      time.sleep(0.3)
+  
   music.stop()
